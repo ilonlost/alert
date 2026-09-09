@@ -1,0 +1,11 @@
+services:
+  fk-access-report:
+    build: .
+    container_name: fk-access-report
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      TZ: ${TIMEZONE:-Europe/Moscow}
+    volumes:
+      - ./reports:/app/reports
