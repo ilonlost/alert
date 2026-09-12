@@ -124,6 +124,10 @@ docker compose up -d --build
 
 All passwords and recipients stay only in `.env`; `.env` is excluded from Git.
 
+The Docker image uses the FreeTDS SQL Server ODBC driver from Debian, so it does
+not need access to `packages.microsoft.com` during a build. Keep
+`DB_DRIVER=FreeTDS` unless you intentionally install and select another driver.
+
 Main variables:
 
 ```env

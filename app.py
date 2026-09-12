@@ -21,7 +21,7 @@ DB_SERVER = os.getenv("DB_SERVER", "11-vm-dwh01")
 DB_NAME = os.getenv("DB_NAME", "TimeShiftFK")
 DB_USER = os.getenv("DB_USER", "")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "")
-DB_DRIVER = os.getenv("DB_DRIVER", "ODBC Driver 18 for SQL Server")
+DB_DRIVER = os.getenv("DB_DRIVER", "FreeTDS")
 DB_TRUST_CERT = os.getenv("DB_TRUST_CERT", "yes")
 
 SMTP_HOST = os.getenv("SMTP_HOST", "smtp.agrohold.ru")
@@ -60,12 +60,14 @@ def get_connection():
     drivers = pyodbc.drivers()
     driver = DB_DRIVER
     if driver not in drivers:
-        if "ODBC Driver 18 for SQL Server" in drivers:
+        if "FreeTDS" in drivers:
+            driver = "FreeTDS"
+        elif "ODBC Driver 18 for SQL Server" in drivers:
             driver = "ODBC Driver 18 for SQL Server"
         elif "ODBC Driver 17 for SQL Server" in drivers:
             driver = "ODBC Driver 17 for SQL Server"
         else:
-            raise RuntimeError(f"Microsoft ODBC Driver 17/18 not found. Installed: {drivers}")
+            raise RuntimeError(f"No SQL Server ODBC driver found. Installed: {drivers}")
 
     conn_str = (
         f"DRIVER={{{driver}}};"
@@ -73,8 +75,12 @@ def get_connection():
         f"DATABASE={DB_NAME};"
         f"UID={DB_USER};"
         f"PWD={DB_PASSWORD};"
-        f"TrustServerCertificate={DB_TRUST_CERT};"
     )
+    if driver == "FreeTDS":
+        conn_str += "TDS_Version=7.4;ClientCharset=UTF-8;"
+    else:
+        conn_str += f"TrustServerCertificate={DB_TRUST_CERT};"
+
     return pyodbc.connect(conn_str, autocommit=True)
 
 
