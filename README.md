@@ -127,6 +127,7 @@ All passwords and recipients stay only in `.env`; `.env` is excluded from Git.
 The Docker image uses the FreeTDS SQL Server ODBC driver from Debian, so it does
 not need access to `packages.microsoft.com` during a build. Keep
 `DB_DRIVER=FreeTDS` unless you intentionally install and select another driver.
+For FreeTDS, `DB_PORT=1433` and `DB_TDS_VERSION=7.4` are the defaults.
 
 Main variables:
 

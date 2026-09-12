@@ -22,6 +22,8 @@ DB_NAME = os.getenv("DB_NAME", "TimeShiftFK")
 DB_USER = os.getenv("DB_USER", "")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "")
 DB_DRIVER = os.getenv("DB_DRIVER", "FreeTDS")
+DB_PORT = os.getenv("DB_PORT", "1433")
+DB_TDS_VERSION = os.getenv("DB_TDS_VERSION", "7.4")
 DB_TRUST_CERT = os.getenv("DB_TRUST_CERT", "yes")
 
 SMTP_HOST = os.getenv("SMTP_HOST", "smtp.agrohold.ru")
@@ -77,7 +79,7 @@ def get_connection():
         f"PWD={DB_PASSWORD};"
     )
     if driver == "FreeTDS":
-        conn_str += "TDS_Version=7.4;ClientCharset=UTF-8;"
+        conn_str += f"PORT={DB_PORT};TDS_Version={DB_TDS_VERSION};ClientCharset=UTF-8;"
     else:
         conn_str += f"TrustServerCertificate={DB_TRUST_CERT};"
 
